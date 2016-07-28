@@ -2,6 +2,8 @@ const n = require('nonce')();
 const rp = require('request-promise');
 const config = require('../../config/config');
 
+const StoreCredential = require('../models/store-credential');
+
 const CALLBACK_URI = `http://${config.DOMAIN}:${config.PORT}/api/auth/callback`;
 
 module.exports.root = (req, res) => {
@@ -16,21 +18,34 @@ module.exports.root = (req, res) => {
 }
 
 module.exports.callback = (req, res) => {
-  const shopUrl = req.query.shop;
+  const shop = req.query.shop;
   const code = req.query.code;
 
   // TODO: Check security features (Step 3) https://help.shopify.com/api/guides/authentication/oauth
-  return rp({
-    method: 'POST',
-    uri: `https://${shopUrl}/admin/oauth/access_token`,
-    body: {
-      client_id: config.SHOPIFY_API_KEY,
-      client_secret: config.SHOPIFY_SHARED_SECRET,
-      code
-    },
-    json: true
-  })
-  .then((response) => {
-    const accessToken = response.access_token;
+  return Promise.all([
+    rp({
+      method: 'POST',
+      uri: `https://${shop}/admin/oauth/access_token`,
+      body: {
+        client_id: config.SHOPIFY_API_KEY,
+        client_secret: config.SHOPIFY_SHARED_SECRET,
+        code
+      },
+      json: true
+    }),
+    StoreCredential.findOne({ shop })
+  ]).then(([response, storeCredential]) => {
+    if (!storeCredential) {
+      storeCredential = new StoreCredential({ shop });
+    } else {
+      console.warn(`${shop} has already been authorized`);
+    }
+
+    storeCredential.accessToken = response.accessToken;
+    storeCredential.scope = response.scope;
+
+    return storeCredential.save();
+  }).then(() => {
+    console.log('StoreCredentials updated');
   });
 }

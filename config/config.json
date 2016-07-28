@@ -3,5 +3,6 @@
   "PORT": "3000",
   "SHOPIFY_API_KEY": "7ddf7eda68720be01db73214341e1f50",
   "SHOPIFY_SHARED_SECRET": "2d27a90eb99def15c37a5964601bf810",
-  "SCOPE": "write_orders,read_customers"
+  "SCOPE": "write_orders,read_customers",
+  "DB_URI": "mongodb://localhost/price-comparer"
 }

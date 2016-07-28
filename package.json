@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.14.0",
+    "mongoose": "^4.5.7",
     "ngrok": "^2.2.2",
     "nonce": "^1.0.4",
     "request-promise": "^4.0.2"

@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const boot = require('./app/util/boot');
 
 const auth = require('./app/controllers/auth');
 
@@ -10,4 +11,6 @@ app.get('/api/auth/callback', auth.callback);
 
 app.get('/', (req, res) => res.send('Hello World!'));
 
-app.listen(3000, () => console.log('Shopify app listening on port 3000!'));
+boot().then(() => {
+  app.listen(3000, () => console.log('Shopify app listening on port 3000!'));
+});
