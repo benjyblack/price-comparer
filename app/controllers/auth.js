@@ -22,30 +22,26 @@ module.exports.callback = (req, res) => {
   const code = req.query.code;
 
   // TODO: Check security features (Step 3) https://help.shopify.com/api/guides/authentication/oauth
-  return Promise.all([
-    rp({
-      method: 'POST',
-      uri: `https://${shop}/admin/oauth/access_token`,
-      body: {
-        client_id: config.SHOPIFY_API_KEY,
-        client_secret: config.SHOPIFY_SHARED_SECRET,
-        code
-      },
-      json: true
-    }),
-    StoreCredential.findOne({ shop })
-  ]).then(([response, storeCredential]) => {
-    if (!storeCredential) {
-      storeCredential = new StoreCredential({ shop });
-    } else {
-      console.warn(`${shop} has already been authorized`);
-    }
-
-    storeCredential.accessToken = response['access_token'];
-    storeCredential.scope = response.scope;
-
-    return storeCredential.save();
-  }).then(() => {
+  return rp({
+    method: 'POST',
+    uri: `https://${shop}/admin/oauth/access_token`,
+    body: {
+      client_id: config.SHOPIFY_API_KEY,
+      client_secret: config.SHOPIFY_SHARED_SECRET,
+      code
+    },
+    json: true
+  }).then((response) =>
+    StoreCredential.findOneAndUpsert({ shop }, {
+      accessToken: response['access_token'],
+      scope: response.scope,
+      shop
+    })
+  ).then(() => {
     console.log('StoreCredentials updated');
+    res.status(200).end();
+  }).catch((err) => {
+    console.error(err);
+    res.status(500).end();
   });
 }
