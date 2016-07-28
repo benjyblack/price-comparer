@@ -1,0 +1,17 @@
+{
+  "name": "price-comparer",
+  "version": "1.0.0",
+  "description": "Compare the price of your Shopify product with similar products online",
+  "main": "app.js",
+  "scripts": {
+    "test": "test"
+  },
+  "author": "Ben Black",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.14.0",
+    "ngrok": "^2.2.2",
+    "nonce": "^1.0.4",
+    "request-promise": "^4.0.2"
+  }
+}

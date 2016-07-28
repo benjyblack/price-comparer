@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>PriceComparer</title>
+</head>
+<body>
+<h1>You made it!</h1>
+
+  <script src="https://cdn.shopify.com/s/assets/external/app.js"></script>
+  
+  <script type="text/javascript">
+    ShopifyApp.init({
+      apiKey: '7ddf7eda68720be01db73214341e1f50',
+      shopOrigin: 'https://bens-bananas.myshopify.com',
+      debug: true,
+      forceRedirect: false
+    });
+  </script>
+
+  <script type="text/javascript">
+    ShopifyApp.ready(function(){
+       ShopifyApp.Bar.initialize({
+         icon: 'http://localhost:3000/assets/header-icon.png',
+         title: 'The App Title',
+         buttons: {
+           primary: {
+             label: 'Save',
+             message: 'save',
+             callback: function(){
+               ShopifyApp.Bar.loadingOn();
+             }
+           }
+         }
+       });
+     });
+  </script>
+</body>
+</html>
