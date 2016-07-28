@@ -1,7 +1,10 @@
 const mongoose = require('mongoose');
 
 const StoreCredential = mongoose.model('StoreCredential', mongoose.Schema({
-  shop: String,
+  shop: {
+    type: String,
+    required: true
+  },
   accessToken: String,
   scope: String
 }), 'store-credentials');

@@ -41,7 +41,7 @@ module.exports.callback = (req, res) => {
       console.warn(`${shop} has already been authorized`);
     }
 
-    storeCredential.accessToken = response.accessToken;
+    storeCredential.accessToken = response['access_token'];
     storeCredential.scope = response.scope;
 
     return storeCredential.save();
