@@ -1,3 +1,4 @@
+const authRouter = require('express').Router();
 const n = require('nonce')();
 const rp = require('request-promise');
 const config = require('../../config/config');
@@ -6,7 +7,9 @@ const StoreCredential = require('../models/store-credential');
 
 const CALLBACK_URI = `http://${config.DOMAIN}:${config.PORT}/api/auth/callback`;
 
-module.exports.root = (req, res) => {
+// mounted at /api/v1/auth
+
+authRouter.get('/', (req, res) => {
   const shopName = req.query.shop;
   const nonce = n();
 
@@ -15,9 +18,9 @@ module.exports.root = (req, res) => {
     `authorize?client_id=${config.SHOPIFY_API_KEY}` +
     `&scope=${config.SCOPE}&redirect_uri=${CALLBACK_URI}` +
     `&state=${nonce}`);
-}
+});
 
-module.exports.callback = (req, res) => {
+authRouter.get('/callback', (req, res) => {
   const shop = req.query.shop;
   const code = req.query.code;
 
@@ -44,4 +47,6 @@ module.exports.callback = (req, res) => {
     console.error(err);
     res.status(500).end();
   });
-}
+});
+
+module.exports = authRouter;
