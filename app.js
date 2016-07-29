@@ -11,6 +11,7 @@ app.use(express.static('public'));
 apiRouter.get('/', (req, res) => res.send('Hello World!'));
 
 apiRouter.use('/auth', require('./app/controllers/auth'));
+apiRouter.use('/products', require('./app/controllers/products'));
 
 app.use('/api/v1', apiRouter);
 

@@ -22,6 +22,16 @@ Object.assign(storeCredentialSchema.statics, {
 
       return storeCredential.save();
     });
+  },
+
+  getAccessToken(shop) {
+    return this.findOne({ shop }).then((doc) => doc.accessToken);
+  },
+
+  getShopName(shopUrl) {
+    return shopUrl
+      .replace(/^www\./, '')
+      .replace(/\.myshopify\.com$/, '');
   }
 });
 

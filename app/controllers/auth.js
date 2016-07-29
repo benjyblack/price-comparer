@@ -1,40 +1,19 @@
 const authRouter = require('express').Router();
-const n = require('nonce')();
-const rp = require('request-promise');
 const config = require('../../config/config');
+
+const shopifyApiConsumer = require('../lib/shopify-api-consumer');
 
 const StoreCredential = require('../models/store-credential');
 
-const CALLBACK_URI = `http://${config.DOMAIN}:${config.PORT}/api/auth/callback`;
-
 // mounted at /api/v1/auth
 
-authRouter.get('/', (req, res) => {
-  const shopName = req.query.shop;
-  const nonce = n();
-
-  return res.redirect(301,
-    `https://${shopName}.myshopify.com/admin/oauth/` +
-    `authorize?client_id=${config.SHOPIFY_API_KEY}` +
-    `&scope=${config.SCOPE}&redirect_uri=${CALLBACK_URI}` +
-    `&state=${nonce}`);
-});
+authRouter.get('/', (req, res) => res.redirect(301, shopifyApiConsumer.buildAuthUrl(req.query.shop)));
 
 authRouter.get('/callback', (req, res) => {
-  const shop = req.query.shop;
+  const shop = StoreCredential.getShopName(req.query.shop);
   const code = req.query.code;
-
   // TODO: Check security features (Step 3) https://help.shopify.com/api/guides/authentication/oauth
-  return rp({
-    method: 'POST',
-    uri: `https://${shop}/admin/oauth/access_token`,
-    body: {
-      client_id: config.SHOPIFY_API_KEY,
-      client_secret: config.SHOPIFY_SHARED_SECRET,
-      code
-    },
-    json: true
-  }).then((response) =>
+  return shopifyApiConsumer.requestAccessToken(shop, code).then((response) =>
     StoreCredential.findOneAndUpsert({ shop }, {
       accessToken: response['access_token'],
       scope: response.scope,
