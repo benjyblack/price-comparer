@@ -1,15 +1,7 @@
-const StoreCredential = require('../models/store-credential');
+const Shop = require('../models/shop');
 
-module.exports.getAccessToken = (req, res, next) => {
-  debugger;
-  return StoreCredential.getAccessToken(req.query.shop).then((accessToken) => {
-    debugger;
+module.exports.getAccessToken = (req, res, next) =>
+  Shop.getAccessToken(Shop.parseName(req.query.shop)).then((accessToken) => {
     req.accessToken = accessToken;
     return next();
   });
-};
-
-module.exports.addAccessToken = (req, res, next) => {
-  res.header('X-Shopify-Access-Token', req.accessToken);
-  next();
-};
