@@ -10,14 +10,14 @@ const Shop = require('../models/shop');
 authRouter.get('/', (req, res) => res.redirect(301, shopifyApiConsumer.buildAuthUrl(req.query.shop)));
 
 authRouter.get('/callback', (req, res) => {
-  const shopName = Shop.parseName(req.query.shop);
+  const name = Shop.parseName(req.query.shop);
   const code = req.query.code;
   // TODO: Check security features (Step 3) https://help.shopify.com/api/guides/authentication/oauth
-  return shopifyApiConsumer.requestAccessToken(shopName, code).then((response) =>
+  return shopifyApiConsumer.requestAccessToken(name, code).then((response) =>
     Shop.findOneAndUpsert({ name }, {
       accessToken: response['access_token'],
       scope: response.scope,
-      shopName
+      name: name
     })
   ).then(() => {
     console.log('Shop updated');

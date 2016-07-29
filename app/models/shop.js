@@ -25,7 +25,11 @@ Object.assign(shopSchema.statics, {
   },
 
   getAccessToken(name) {
-    return this.findOne({ name }).then((doc) => doc.accessToken);
+    return this.findOne({ name }).then((doc) => {
+      if (!doc) throw new Error(`No Shop exists with name ${name}`);
+
+      return doc.accessToken;
+    });
   },
 
   parseName(shopUrl) {
