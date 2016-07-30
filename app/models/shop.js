@@ -34,6 +34,7 @@ Object.assign(shopSchema.statics, {
 
   parseName(shopUrl) {
     return shopUrl
+      .replace(/^http(s)?:\/\//, '')
       .replace(/^www\./, '')
       .replace(/\.myshopify\.com$/, '');
   }
