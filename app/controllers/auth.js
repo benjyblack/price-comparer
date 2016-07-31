@@ -17,7 +17,7 @@ authRouter.get('/callback', (req, res) => {
     Shop.findOneAndUpsert({ name }, {
       accessToken: response['access_token'],
       scope: response.scope,
-      name: name
+      name
     })
   ).then(() => {
     console.log('Shop updated');

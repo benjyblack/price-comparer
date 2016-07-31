@@ -19,15 +19,15 @@ module.exports.buildAuthenticatedHeaders = (accessToken) => ({ 'X-Shopify-Access
 
 module.exports.requestAccessToken = (shopName, code) =>
   rp({
-      method: 'POST',
-      json: true,
-      uri: `${this.buildShopUrl(shopName)}/admin/oauth/access_token`,
-      body: {
-        client_id: config.SHOPIFY_API_KEY,
-        client_secret: config.SHOPIFY_SHARED_SECRET,
-        code
-      }
-    });
+    method: 'POST',
+    json: true,
+    uri: `${this.buildShopUrl(shopName)}/admin/oauth/access_token`,
+    body: {
+      client_id: config.SHOPIFY_API_KEY,
+      client_secret: config.SHOPIFY_SHARED_SECRET,
+      code
+    }
+  });
 
 module.exports.get = (shopName, accessToken, resourcePath, options) =>
   rp({
@@ -35,4 +35,4 @@ module.exports.get = (shopName, accessToken, resourcePath, options) =>
     json: true,
     uri: `${this.buildShopUrl(shopName)}/admin/${resourcePath}?${options}`,
     headers: this.buildAuthenticatedHeaders(accessToken)
-  });  
+  });
